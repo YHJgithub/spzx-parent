@@ -11,4 +11,7 @@ import java.util.List;
 public interface IProductSpecService extends IService<ProductSpec> {
 
 
+    List<ProductSpec> list(ProductSpec productSpec);
+
+    ProductSpec getInfo(Integer id);
 }

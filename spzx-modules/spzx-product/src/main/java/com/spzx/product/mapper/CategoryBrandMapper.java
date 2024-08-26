@@ -10,5 +10,6 @@ import java.util.List;
  */
 public interface CategoryBrandMapper extends BaseMapper<CategoryBrand> {
 
+    List<CategoryBrand> list(CategoryBrand categoryBrand);
 }
 

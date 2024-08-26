@@ -11,4 +11,5 @@ import java.util.List;
 public interface ProductSpecMapper extends BaseMapper<ProductSpec> {
 
 
+    List<ProductSpec> list(ProductSpec productSpec);
 }

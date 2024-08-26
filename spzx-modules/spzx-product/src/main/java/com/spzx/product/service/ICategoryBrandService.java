@@ -9,5 +9,12 @@ import java.util.List;
  * 分类品牌Service接口
  */
 public interface ICategoryBrandService extends IService<CategoryBrand> {
-    
+
+    List<CategoryBrand> list(CategoryBrand categoryBrand);
+
+    CategoryBrand getInfo(Integer id);
+
+    int add(CategoryBrand categoryBrand);
+
+    int updateCategoryBrand(CategoryBrand categoryBrand);
 }

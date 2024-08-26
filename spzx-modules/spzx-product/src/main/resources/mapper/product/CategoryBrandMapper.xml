@@ -6,4 +6,21 @@
 <mapper namespace="com.spzx.product.mapper.CategoryBrandMapper">
 
 
+    <select id="list" resultType="com.spzx.product.domain.CategoryBrand">
+        select cb.id,
+        cb.brand_id brandId,
+        cb.category_id categoryId,
+        c.name categoryName,
+        b.name brandName,
+        b.logo,
+        cb.create_time
+        from category_brand cb
+        left join category c on cb.category_id = c.id
+        left join brand b on cb.brand_id = b.id
+        <where>
+            <if test="brandId != null">and cb.brand_id = #{brandId}</if>
+            <if test="categoryId != null">and cb.category_id = #{categoryId}</if>
+            and cb.del_flag = 0 and c.del_flag = 0 and b.del_flag = 0
+        </where>
+    </select>
 </mapper>

@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 分类品牌对象 category_brand
  */
@@ -33,5 +35,9 @@ public class CategoryBrand extends BaseEntity {
     @Schema(description = "品牌图标")
     @TableField(exist = false)
     private String logo;
+
+    @Schema(description = "分类id列表")
+    @TableField(exist = false)
+    private List<Long> categoryIdList;
 
 }

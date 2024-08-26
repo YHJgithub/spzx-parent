@@ -21,5 +21,10 @@ public class CategoryController extends BaseController {
 
     @Autowired
     private ICategoryService categoryService;
-    
+
+    @Operation(summary = "获取分类下拉树列表")
+    @GetMapping(value = "/treeSelect/{id}")
+    public AjaxResult treeSelect(@PathVariable Long id) {
+        return success(categoryService.treeSelect(id));
+    }
 }
