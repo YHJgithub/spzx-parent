@@ -8,3 +8,37 @@ export function listProductUnit(query) {
         params: query
     })
 }
+
+// 新增商品单位
+export function addProductUnit(data) {
+    return request({
+        url: '/product/productUnit',
+        method: 'post',
+        data: data
+    })
+}
+
+// 查询商品单位详细
+export function getProductUnit(id) {
+    return request({
+        url: '/product/productUnit/' + id,
+        method: 'get'
+    })
+}
+
+// 修改商品单位
+export function updateProductUnit(data) {
+    return request({
+        url: '/product/productUnit',
+        method: 'put',
+        data: data
+    })
+}
+
+// 删除商品单位
+export function delProductUnit(id) {
+    return request({
+        url: '/product/productUnit/' + id,
+        method: 'delete'
+    })
+}

@@ -45,7 +45,7 @@ public class BrandController extends BaseController {
     }
 
     @Operation(summary = "新增品牌")
-    @PostMapping("/add")
+    @PostMapping
     public AjaxResult add(@Validated @RequestBody Brand brand) {
         brand.setCreateBy(SecurityUtils.getUsername());
         return toAjax(brandService.add(brand));
