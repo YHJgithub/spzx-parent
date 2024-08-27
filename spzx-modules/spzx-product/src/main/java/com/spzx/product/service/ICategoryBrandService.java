@@ -1,6 +1,7 @@
 package com.spzx.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.spzx.product.domain.Brand;
 import com.spzx.product.domain.CategoryBrand;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface ICategoryBrandService extends IService<CategoryBrand> {
     int add(CategoryBrand categoryBrand);
 
     int updateCategoryBrand(CategoryBrand categoryBrand);
+
+    List<Brand> selectBrandListByCategoryId(Integer categoryId);
 }

@@ -1,5 +1,6 @@
 package com.spzx.product.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.spzx.product.domain.ProductSpec;
 import com.spzx.product.mapper.ProductSpecMapper;
@@ -34,5 +35,11 @@ public class ProductSpecServiceImpl extends ServiceImpl<ProductSpecMapper, Produ
         List<Long> idList = categoryService.getAllCategoryIdList(productSpec.getCategoryId());
         productSpec.setCategoryIdList(idList);
         return productSpec;
+    }
+
+    @Override
+    public List<ProductSpec> selectProductSpecListByCategoryId(Integer categoryId) {
+        return productSpecMapper.selectList(new LambdaQueryWrapper<ProductSpec>()
+                .eq(ProductSpec::getCategoryId, categoryId));
     }
 }

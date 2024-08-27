@@ -14,4 +14,6 @@ public interface IProductSpecService extends IService<ProductSpec> {
     List<ProductSpec> list(ProductSpec productSpec);
 
     ProductSpec getInfo(Integer id);
+
+    List<ProductSpec> selectProductSpecListByCategoryId(Integer categoryId);
 }

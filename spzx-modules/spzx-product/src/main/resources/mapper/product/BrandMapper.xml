@@ -15,9 +15,9 @@
     <select id="selectBrandList" resultMap="BrandResult">
         <include refid="selectBrandVo"/>
         <where>
-            <if test="name != null  and name != ''">and name like concat(#{name}, '%')</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
             <if test="logo != null  and logo != ''">and logo = #{logo}</if>
-            <if test="remark != null  and remark != ''">and remark like concat(#{remark}, '%')</if>
+            <if test="remark != null  and remark != ''">and remark like concat('%', #{remark}, '%')</if>
             and del_flag = 0
         </where>
     </select>

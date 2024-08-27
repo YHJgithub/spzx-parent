@@ -5,6 +5,8 @@ import com.spzx.common.core.web.domain.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 商品对象 product
  */
@@ -104,4 +106,11 @@ public class Product extends BaseEntity {
     @TableField(exist = false)
     private String category3Name;
 
+    @Schema(description = "商品sku列表")
+    @TableField(exist = false)
+    private List<ProductSku> productSkuList;
+
+    @Schema(description = "详情图片列表")
+    @TableField(exist = false)
+    private List<String> detailsImageUrlList;
 }

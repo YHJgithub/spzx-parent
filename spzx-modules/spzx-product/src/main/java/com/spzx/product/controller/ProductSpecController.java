@@ -59,4 +59,10 @@ public class ProductSpecController extends BaseController {
     public AjaxResult delete(@PathVariable Integer[] ids) {
         return toAjax(productSpecService.removeBatchByIds(Arrays.asList(ids)));
     }
+
+    @Operation(summary = "根据分类id获取商品规格列表")
+    @GetMapping("/productSpecList/{categoryId}")
+    public AjaxResult selectProductSpecListByCategoryId(@PathVariable Integer categoryId) {
+        return success(productSpecService.selectProductSpecListByCategoryId(categoryId));
+    }
 }

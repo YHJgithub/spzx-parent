@@ -23,4 +23,14 @@
             and cb.del_flag = 0 and c.del_flag = 0 and b.del_flag = 0
         </where>
     </select>
+    
+    
+    <select id="selectBrandListByCategoryId" resultType="com.spzx.product.domain.Brand">
+        select *
+        from category_brand cb
+                 left join brand b on cb.brand_id = b.id
+        where cb.category_id = #{categoryId}
+          and cb.del_flag = '0'
+          and b.del_flag = '0'
+    </select>
 </mapper>

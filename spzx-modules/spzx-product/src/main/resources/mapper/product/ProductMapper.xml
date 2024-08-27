@@ -5,5 +5,36 @@
 <!--namespace属性：配置接口的全类名-->
 <mapper namespace="com.spzx.product.mapper.ProductMapper">
 
+    <resultMap id="ProductResult" type="Product" autoMapping="true">
+    </resultMap>
 
+    <select id="selectProductList" resultMap="ProductResult">
+        select p.id,
+        p.slider_urls,
+        p.name,
+        b.name,
+        c1.name,
+        c2.name,
+        c3.name,
+        p.unit_name,
+        p.status,
+        p.audit_status
+        from product p
+        left join brand b on p.brand_id = b.id
+        left join category c1 on p.category1_id = c1.id
+        left join category c2 on p.category2_id = c2.id
+        left join category c3 on p.category3_id = c3.id
+        <where>
+            <if test="name!=null and name != ''">and p.name like concat('%', #{name}, '%')</if>
+            <if test="brandId != null">and p.brand_id = #{brandId}</if>
+            <if test="category1Id != null">and p.category1_id = #{category1Id}</if>
+            <if test="category2Id != null">and p.category2_id = #{category2Id}</if>
+            <if test="category3Id != null">and p.category3_id = #{category3Id}</if>
+            and p.del_flag = 0
+            and b.del_flag = 0
+            and c1.del_flag = 0
+            and c2.del_flag = 0
+            and c3.del_flag = 0
+        </where>
+    </select>
 </mapper>
