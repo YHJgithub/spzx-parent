@@ -42,3 +42,10 @@ export function deleteById(id) {
         method: 'delete'
     })
 }
+
+export function getBrandAll() {
+    return request({
+        url: '/product/brand/getBrandAll',
+        method: 'get'
+    })
+}
