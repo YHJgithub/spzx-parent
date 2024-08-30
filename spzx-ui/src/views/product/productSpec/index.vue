@@ -9,26 +9,17 @@
             style="width: 100%"
         />
       </el-form-item>
-
-      <el-form-item label="品牌">
-        <el-select
-            v-model="queryParams.brandId"
-            class="m-2"
-            placeholder="选择品牌"
-            size="small"
-            style="width: 100%"
-        >
-          <el-option
-              v-for="item in brandList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-          />
-        </el-select>
+      <el-form-item label="规格名称" prop="specName">
+        <el-input
+            v-model="queryParams.specName"
+            placeholder="请输入规格名称"
+            clearable
+            @keyup.enter="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button icon="Refresh" id="reset-all" @click="resetQuery">重置</el-button>
+        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -47,7 +38,6 @@
             type="success"
             plain
             icon="Edit"
-            :disabled="single"
             @click="handleUpdate"
         >修改
         </el-button>
@@ -57,7 +47,6 @@
             type="danger"
             plain
             icon="Delete"
-            :disabled="multiple"
             @click="handleDelete"
         >删除
         </el-button>
@@ -65,16 +54,28 @@
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <!-- 数据展示表格 -->
-    <el-table v-loading="loading" :data="categoryBrandList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="specList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="分类名称" prop="categoryName"/>
-      <el-table-column label="品牌名称" prop="brandName"/>
-      <el-table-column prop="logo" label="品牌图标" #default="scope">
-        <img :src="scope.row.logo" width="50"/>
+      <el-table-column label="分类名称" prop="categoryName" width="120"/>
+      <el-table-column label="规格名称" align="left" prop="specName" width="120"/>
+      <el-table-column label="规格值" #default="scope">
+        <div
+            v-for="(item1, index1) in scope.row.specValueList"
+            :key="index1"
+            style="padding: 5px; margin: 0;width: 100%;"
+        >
+          {{ item1.key }}：
+          <span
+              v-for="(item2, index2) in item1.valueList"
+              :key="index2"
+              class="div-atrr"
+          >
+          {{ item2 }}
+        </span>
+        </div>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column prop="createTime" label="创建时间" width="160"/>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="160">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)">删除</el-button>
@@ -91,30 +92,65 @@
         @pagination="getList"
     />
 
-    <!-- 添加或修改分类品牌对话框 -->
-    <el-dialog :title="title" v-model="open" :rules="rules" width="500px" append-to-body>
-      <el-form ref="categoryBrandRef" :model="form" label-width="80px">
+    <!-- 添加或修改商品规格对话框 -->
+    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+      <el-form ref="specRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="分类" prop="categoryIdList">
           <el-cascader
               :props="categoryProps"
               v-model="form.categoryIdList"
           />
         </el-form-item>
-        <el-form-item label="品牌" prop="brandId">
-          <el-select
-              v-model="form.brandId"
-              class="m-2"
-              placeholder="选择品牌"
-              size="small"
-          >
-            <el-option
-                v-for="item in brandList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-            />
-          </el-select>
+        <el-form-item label="规格名称" prop="specName">
+          <el-input v-model="form.specName" placeholder="请输入规格名称"/>
         </el-form-item>
+        <el-form-item>
+          <div
+              v-for="(item1, index1) in specValueList"
+              :key="index1"
+              style="padding: 10px; margin: 0;"
+          >
+            {{ item1.key }}：
+            <span
+                v-for="(item2, index2) in item1.valueList"
+                :key="index2"
+                class="div-atrr"
+            >
+            {{ item2 }}
+          </span>
+            <el-button size="small" @click="removeAttr(index1)">删除</el-button>
+            <br/>
+          </div>
+        </el-form-item>
+        <el-form-item label="">
+          <el-row v-if="isAdd">
+            <el-col :span="10">
+              <el-input
+                  v-model="specValue.key"
+                  placeholder="规格"
+                  style="width: 90%;"
+              />
+            </el-col>
+            <el-col :span="10">
+              <el-input
+                  v-model="specValue.values"
+                  placeholder="规格值(如:白色,红色)"
+                  style="width: 90%;"
+              />
+            </el-col>
+            <el-col :span="4">
+              <el-button size="default" @click="addSpecValue">添加</el-button>
+            </el-col>
+          </el-row>
+          <el-row v-if="!isAdd">
+            <el-col :span="4" align="left">
+              <el-button size="default" @click="isAdd = true">
+                添加新规格
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -127,25 +163,19 @@
   </div>
 </template>
 
-<script setup name="CategoryBrand">
-import {
-  listCategoryBrand,
-  addCategoryBrand,
-  getCategoryBrand,
-  updateCategoryBrand,
-  delCategoryBrand
-} from "@/api/product/categoryBrand";
-import {getBrandAll} from "@/api/product/brand";
+<script setup>
+import {listSpec, addSpec, getSpec, updateSpec, delSpec} from "@/api/product/productSpec";
 import {getTreeSelect} from "@/api/product/category";
 
 const {proxy} = getCurrentInstance();
 
 //定义分页列表数据模型
-const categoryBrandList = ref([]);
+const specList = ref([]);
 //定义列表总记录数模型
 const total = ref(0);
 //加载数据时显示的动效控制模型
 const loading = ref(true);
+//定义隐藏搜索控制模型
 const showSearch = ref(true);
 //新增与修改弹出层控制模型
 const open = ref(false);
@@ -162,43 +192,36 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    brandId: null,
-    categoryId: null
+    categoryId: null,
+    specName: null
   },
   form: {},
   rules: {
     categoryIdList: [
       {required: true, message: "分类不能为空", trigger: "blur"}
     ],
-    brandId: [
-      {required: true, message: "品牌不能为空", trigger: "blur"}
+    specName: [
+      {required: true, message: "规则名称不能为空", trigger: "blur"}
     ]
   }
 });
 
 const {queryParams, form, rules} = toRefs(data);
 
-/** 查询分类品牌列表 */
+/** 查询商品规格列表 */
 function getList() {
   loading.value = true;
+  listSpec(queryParams.value).then(response => {
+    specList.value = response.rows;
 
-  listCategoryBrand(queryParams.value).then(response => {
-    categoryBrandList.value = response.rows;
+    specList.value.forEach(function (item) {
+      item.specValueList = JSON.parse(item.specValue)
+    })
+
     total.value = response.total;
     loading.value = false;
   });
 }
-
-//品牌
-const brandList = ref([])
-
-function getBrandAllList() {
-  getBrandAll().then(response => {
-    brandList.value = response.data
-  })
-}
-
-getBrandAllList();
 
 //三级分类
 const props = {
@@ -240,26 +263,90 @@ function resetQuery() {
   queryCategoryIdList.value = []
   proxy.resetForm("queryRef");
   queryParams.value.categoryId = null
-  queryParams.value.brandId = null
   handleQuery();
+}
+
+//编辑规格属性
+const isAdd = ref(false)
+const specValue = ref({key: '', values: ''})
+const specValueList = ref([])
+
+function addSpecValue() {
+  specValueList.value.push({
+    key: specValue.value.key,
+    valueList: specValue.value.values.split(','),
+  })
+  specValue.value = {}
+  isAdd.value = false
+}
+
+function removeAttr(index) {
+  specValueList.value.splice(index, 1)
 }
 
 /** 新增按钮操作 */
 function handleAdd() {
   reset();
   open.value = true;
-  title.value = "添加分类品牌";
+  title.value = "添加商品规格";
+
+  specValueList.value = []
 }
 
 // 表单重置
 function reset() {
   form.value = {
     id: null,
-    brandId: null,
+    specName: null,
+    specValue: null,
     categoryId: null,
     categoryIdList: []
   };
-  proxy.resetForm("categoryBrandRef");
+  proxy.resetForm("specRef");
+}
+
+/** 修改按钮操作 */
+function handleUpdate(row) {
+  reset();
+  const _id = row.id || ids.value
+  getSpec(_id).then(response => {
+    form.value = response.data;
+    open.value = true;
+    title.value = "修改商品规格";
+
+    specValueList.value = JSON.parse(form.value.specValue)
+  });
+}
+
+/** 提交按钮 */
+function submitForm() {
+  proxy.$refs["specRef"].validate(valid => {
+    if (valid) {
+      form.value.specValue = JSON.stringify(specValueList.value)
+      //系统只需要三级分类id
+      form.value.categoryId = form.value.categoryIdList[2]
+
+      if (form.value.id != null) {
+        updateSpec(form.value).then(response => {
+          proxy.$modal.msgSuccess("修改成功");
+          open.value = false;
+          getList();
+        });
+      } else {
+        addSpec(form.value).then(response => {
+          proxy.$modal.msgSuccess("新增成功");
+          open.value = false;
+          getList();
+        });
+      }
+    }
+  });
+}
+
+// 取消按钮
+function cancel() {
+  open.value = false;
+  reset();
 }
 
 // 多选框选中数据
@@ -270,48 +357,11 @@ function handleSelectionChange(selection) {
   multiple.value = !selection.length;
 }
 
-
-/** 修改按钮操作 */
-function handleUpdate(row) {
-  reset();
-  const _id = row.id || ids.value
-  getCategoryBrand(_id).then(response => {
-    form.value = response.data;
-    open.value = true;
-    title.value = "修改分类品牌";
-  });
-}
-
-/** 提交按钮 */
-function submitForm() {
-  proxy.$refs["categoryBrandRef"].validate(valid => {
-    debugger
-    if (valid) {
-      //系统只需要三级分类id
-      form.value.categoryId = form.value.categoryIdList[2]
-
-      if (form.value.id != null) {
-        updateCategoryBrand(form.value).then(response => {
-          proxy.$modal.msgSuccess("修改成功");
-          open.value = false;
-          getList();
-        });
-      } else {
-        addCategoryBrand(form.value).then(response => {
-          proxy.$modal.msgSuccess("新增成功");
-          open.value = false;
-          getList();
-        });
-      }
-    }
-  });
-}
-
-// 删除按钮操作
+/** 删除按钮操作 */
 function handleDelete(row) {
   const _ids = row.id || ids.value;
-  proxy.$modal.confirm('是否确认删除商品单位编号为"' + _ids + '"的数据项？').then(function () {
-    return delCategoryBrand(_ids);
+  proxy.$modal.confirm('是否确认删除商品规格编号为"' + _ids + '"的数据项？').then(function () {
+    return delSpec(_ids);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");
@@ -319,11 +369,13 @@ function handleDelete(row) {
   });
 }
 
-// 取消按钮
-function cancel() {
-  open.value = false;
-  reset();
-}
-
 getList()
 </script>
+<style scoped>
+.div-atrr {
+  padding: 5px 10px;
+  margin: 0 10px;
+  background-color: powderblue;
+  border-radius: 10px;
+}
+</style>
