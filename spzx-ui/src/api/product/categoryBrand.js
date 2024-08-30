@@ -41,3 +41,11 @@ export function delCategoryBrand(id) {
         method: 'delete'
     })
 }
+
+// 根据分类获取分类品牌
+export function getCategoryBrandAll(categoryId) {
+    return request({
+        url: 'product/categoryBrand/brandList/' + categoryId,
+        method: 'get'
+    })
+}

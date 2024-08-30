@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.spzx.common.core.annotation.Excel;
 
 /**
  * Entity基类
@@ -22,6 +23,7 @@ public class BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
+    @Excel(name = "id")
     @TableId(type = IdType.AUTO)
     private Long id;
 

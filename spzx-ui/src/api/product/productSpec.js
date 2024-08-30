@@ -42,3 +42,11 @@ export function updateSpec(data) {
         data: data
     })
 }
+
+// 根据分类获取分类规格
+export function getCategorySpecAll(categoryId) {
+    return request({
+        url: '/product/productSpec/productSpecList/' + categoryId,
+        method: 'get'
+    })
+}

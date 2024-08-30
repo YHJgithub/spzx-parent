@@ -42,3 +42,11 @@ export function delProductUnit(id) {
         method: 'delete'
     })
 }
+
+// 查询全部商品单位
+export function getUnitAll() {
+    return request({
+        url: '/product/productUnit/getUnitAll',
+        method: 'get'
+    })
+}
