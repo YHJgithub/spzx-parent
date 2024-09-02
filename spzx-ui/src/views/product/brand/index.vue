@@ -25,6 +25,7 @@
             plain
             icon="Plus"
             @click="handleAdd"
+            v-hasPermi="['product:brand:add']"
         >新增
         </el-button>
       </el-col>
@@ -35,6 +36,7 @@
             icon="Edit"
             :disabled="single"
             @click="handleUpdate"
+            v-hasPermi="['product:brand:edit']"
         >修改
         </el-button>
       </el-col>
@@ -45,6 +47,7 @@
             icon="Delete"
             :disabled="multiple"
             @click="handleDelete"
+            v-hasPermi="['product:brand:remove']"
         >删除
         </el-button>
       </el-col>
@@ -63,8 +66,12 @@
       <el-table-column prop="createTime" label="创建时间"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
+                     v-hasPermi="['product:brand:edit']">修改
+          </el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
+                     v-hasPermi="['product:brand:remove']">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
