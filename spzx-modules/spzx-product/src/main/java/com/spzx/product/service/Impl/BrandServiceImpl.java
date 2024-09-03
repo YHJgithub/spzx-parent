@@ -1,7 +1,7 @@
 package com.spzx.product.service.Impl;
 
 import com.spzx.product.mapper.BrandMapper;
-import com.spzx.product.domain.Brand;
+import com.spzx.product.api.domain.Brand;
 import com.spzx.product.service.IBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

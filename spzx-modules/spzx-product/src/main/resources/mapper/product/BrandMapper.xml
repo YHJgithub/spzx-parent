@@ -22,7 +22,7 @@
         </where>
     </select>
 
-    <select id="getInfo" resultType="com.spzx.product.domain.Brand">
+    <select id="getInfo" resultType="com.spzx.product.api.domain.Brand">
         <include refid="selectBrandVo"></include>
         where id = #{id}
     </select>

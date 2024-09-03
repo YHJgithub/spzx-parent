@@ -1,11 +1,13 @@
 package com.spzx.product.controller;
 
+import com.spzx.common.core.domain.R;
 import com.spzx.common.core.web.controller.BaseController;
 import com.spzx.common.core.web.domain.AjaxResult;
 import com.spzx.common.core.web.page.TableDataInfo;
+import com.spzx.common.security.annotation.InnerAuth;
 import com.spzx.common.security.annotation.RequiresPermissions;
 import com.spzx.common.security.utils.SecurityUtils;
-import com.spzx.product.domain.Brand;
+import com.spzx.product.api.domain.Brand;
 import com.spzx.product.service.IBrandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -75,5 +77,12 @@ public class BrandController extends BaseController {
     @GetMapping("getBrandAll")
     public AjaxResult getBrandAll() {
         return success(brandService.getBrandAll());
+    }
+
+    @InnerAuth
+    @Operation(summary = "查询所有品牌")
+    @GetMapping("getBrandAllList")
+    public R<List<Brand>> getBrandAllList() {
+        return R.ok(brandService.getBrandAll());
     }
 }

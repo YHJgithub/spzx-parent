@@ -3,7 +3,7 @@ package com.spzx.product.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.spzx.common.core.exception.ServiceException;
-import com.spzx.product.domain.Brand;
+import com.spzx.product.api.domain.Brand;
 import com.spzx.product.domain.CategoryBrand;
 import com.spzx.product.mapper.CategoryBrandMapper;
 import com.spzx.product.service.ICategoryBrandService;

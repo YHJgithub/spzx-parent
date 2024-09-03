@@ -1,6 +1,6 @@
 package com.spzx.product.mapper;
 
-import com.spzx.product.domain.Brand;
+import com.spzx.product.api.domain.Brand;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

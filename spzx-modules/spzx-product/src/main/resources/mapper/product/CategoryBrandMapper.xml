@@ -25,7 +25,7 @@
     </select>
     
     
-    <select id="selectBrandListByCategoryId" resultType="com.spzx.product.domain.Brand">
+    <select id="selectBrandListByCategoryId" resultType="com.spzx.product.api.domain.Brand">
         select *
         from category_brand cb
                  left join brand b on cb.brand_id = b.id
