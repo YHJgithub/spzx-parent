@@ -3,8 +3,10 @@ package com.spzx.product.service.Impl;
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.spzx.product.api.domain.vo.CategoryVo;
 import com.spzx.product.domain.Category;
 import com.spzx.product.domain.vo.CategoryExcelVo;
+import com.spzx.product.helper.CategoryHelper;
 import com.spzx.product.mapper.CategoryMapper;
 import com.spzx.product.service.ICategoryService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +21,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 商品分类Service业务层处理
@@ -111,5 +114,29 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<CategoryVo> getOneCategory() {
+        List<Category> allCategoryList = categoryMapper.selectList(new LambdaQueryWrapper<Category>().eq(Category::getParentId, 0));
+        return allCategoryList.stream().map(item -> {
+            CategoryVo categoryVo = new CategoryVo();
+            BeanUtils.copyProperties(item, categoryVo);
+            return categoryVo;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryVo> tree() {
+        // 1.查找所有分类
+        List<Category> allCategoryList = categoryMapper.selectList(null);
+        // 2.将集合的所有值都替换成CategoryVo类型，最终返回为CategoryVo集合
+        List<CategoryVo> categoryVoList = allCategoryList.stream().map(item -> {
+            CategoryVo categoryVo = new CategoryVo();
+            BeanUtils.copyProperties(item, categoryVo);
+            return categoryVo;
+        }).collect(Collectors.toList());
+        
+        return CategoryHelper.buildTree(categoryVoList);
     }
 }

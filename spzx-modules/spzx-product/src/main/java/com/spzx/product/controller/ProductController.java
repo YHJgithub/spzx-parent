@@ -1,11 +1,12 @@
 package com.spzx.product.controller;
 
+import com.spzx.common.core.domain.R;
 import com.spzx.common.core.web.controller.BaseController;
 import com.spzx.common.core.web.domain.AjaxResult;
 import com.spzx.common.core.web.page.TableDataInfo;
+import com.spzx.common.security.annotation.InnerAuth;
 import com.spzx.product.domain.Product;
-import com.spzx.product.domain.ProductSku;
-import com.spzx.product.domain.ProductSpec;
+import com.spzx.product.api.domain.ProductSku;
 import com.spzx.product.service.IProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,4 +72,10 @@ public class ProductController extends BaseController {
         return success();
     }
 
+    @InnerAuth
+    @Operation(summary = "获取销量好的sku")
+    @GetMapping("getTopSale")
+    public R<List<ProductSku>> getTopSale(){
+        return R.ok(productService.getTopSale());
+    }
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace属性：配置接口的全类名-->
+<mapper namespace="com.spzx.product.mapper.ProductSkuMapper">
+
+    <resultMap id="getTopSaleResult" type="ProductSku" autoMapping="true">
+    </resultMap>
+
+    <select id="getTopSale" resultMap="getTopSaleResult">
+        select ps.id,
+               ps.sku_code,
+               ps.sku_name,
+               ps.product_id,
+               ps.thumb_img,
+               ps.sale_price,
+               ps.market_price,
+               ps.cost_price,
+               ps.sku_spec,
+               ps.weight,
+               ps.volume,
+               ps.status,
+               ss.available_num,
+               ss.sale_num
+        from product_sku ps
+                 left join product p on ps.product_id = p.id
+                 left join sku_stock ss on ps.id = ss.sku_id
+        where p.status = '1'
+          and p.audit_status = '1'
+          and ps.del_flag = '0'
+          and p.del_flag = '0'
+          and ss.del_flag = '0'
+        order by ss.sale_num desc
+        limit 20
+    </select>
+</mapper>

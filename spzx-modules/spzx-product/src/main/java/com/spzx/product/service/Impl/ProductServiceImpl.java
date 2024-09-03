@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.spzx.common.core.exception.ServiceException;
 import com.spzx.product.domain.Product;
 import com.spzx.product.domain.ProductDetails;
-import com.spzx.product.domain.ProductSku;
+import com.spzx.product.api.domain.ProductSku;
 import com.spzx.product.domain.SkuStock;
 import com.spzx.product.mapper.ProductDetailsMapper;
 import com.spzx.product.mapper.ProductMapper;
@@ -181,5 +181,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             product.setStatus(-1); // 下架
         }
         productMapper.updateById(product);
+    }
+
+    @Override
+    public List<ProductSku> getTopSale() {
+        return productSkuMapper.getTopSale();
     }
 }

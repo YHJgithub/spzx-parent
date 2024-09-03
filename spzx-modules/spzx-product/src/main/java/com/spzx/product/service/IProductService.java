@@ -1,9 +1,8 @@
 package com.spzx.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.spzx.product.domain.Category;
 import com.spzx.product.domain.Product;
-import com.spzx.product.domain.ProductSku;
+import com.spzx.product.api.domain.ProductSku;
 
 import java.util.List;
 
@@ -25,4 +24,6 @@ public interface IProductService extends IService<Product> {
     void updateAuditStatus(Long id, Integer auditStatus);
 
     void updateStatus(Long id, Integer status);
+
+    List<ProductSku> getTopSale();
 }
