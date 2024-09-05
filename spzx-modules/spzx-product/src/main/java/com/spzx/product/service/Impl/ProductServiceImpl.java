@@ -3,6 +3,7 @@ package com.spzx.product.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.spzx.common.core.exception.ServiceException;
+import com.spzx.common.redis.cache.GuiguCache;
 import com.spzx.product.api.domain.vo.SkuPrice;
 import com.spzx.product.api.domain.vo.SkuQuery;
 import com.spzx.product.api.domain.vo.SkuStockVo;
@@ -18,13 +19,13 @@ import com.spzx.product.service.IProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +47,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Autowired
     ProductDetailsMapper productDetailsMapper;
 
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Override
     public List<Product> selectProductList(Product product) {
@@ -199,16 +202,67 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     // ==================================获取商品详情START=====================================
+    /* @Override
+    public ProductSku getProductSku(Long skuId) {
+        // 1.先查询redis缓存，有，直接返回，
+        String dataKey = "product:sku:" + skuId;
+
+        ProductSku productSku = null;
+        if (redisTemplate.hasKey(dataKey)) {
+            productSku = (ProductSku) redisTemplate.opsForValue().get(dataKey);
+            log.info("命中缓存，直接返回，线程ID：{}，线程名称：{}", Thread.currentThread().getId(), Thread.currentThread().getName());
+            return productSku;
+        }
+
+        // 2.没有,再查询数据库，放在缓存中，给下次访问使用。利用缓存提高效率。
+        String lockKey = "product:sku:lock:" + skuId;
+        String lockVal = UUID.randomUUID().toString().replaceAll("-", "");
+        Boolean ifAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockVal, 5, TimeUnit.SECONDS);
+        if (ifAbsent) { // 加分布式锁成功
+            try {
+                log.info("获取锁成功：{}，线程名称：{}", Thread.currentThread().getId(), Thread.currentThread().getName());
+                productSku = productSkuMapper.selectById(skuId);
+                long ttl = productSku == null ? 1 * 60 : 10 * 60; // 解决缓存穿透：解决方案1（null值也存储，但是时间短一些。）
+                redisTemplate.opsForValue().set(dataKey, productSku, ttl, TimeUnit.SECONDS);
+                return productSku;
+            } finally {
+                // 4.业务执行完毕释放锁
+                String scriptText = "if redis.call(\"get\",KEYS[1]) == ARGV[1]\n" +
+                        "then\n" +
+                        "    return redis.call(\"del\",KEYS[1])\n" +
+                        "else\n" +
+                        "    return 0\n" +
+                        "end";
+                DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+                redisScript.setScriptText(scriptText);
+                redisScript.setResultType(Long.class);
+                redisTemplate.execute(redisScript, Arrays.asList(lockKey), lockVal);
+            }
+        } else { // 加分布式锁失败,等待自旋
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.error("获取锁失败，自旋：{}，线程名称：{}", Thread.currentThread().getId(), Thread.currentThread().getName());
+            return getProductSku(skuId);
+        }
+    } */
+
+    @GuiguCache(prefix = "product:sku:")
     @Override
     public ProductSku getProductSku(Long skuId) {
-        return productSkuMapper.selectById(skuId);
+        ProductSku productSku = productSkuMapper.selectById(skuId);
+        return productSku;
     }
 
+    @GuiguCache(prefix = "product:")
     @Override
     public Product getProduct(Long id) {
         return productMapper.selectById(id);
     }
 
+    @GuiguCache(prefix = "skuPrice:")
     @Override
     public SkuPrice getSkuPrice(Long skuId) {
         ProductSku productSku = productSkuMapper.selectOne(new LambdaQueryWrapper<ProductSku>().eq(ProductSku::getId, skuId).select(ProductSku::getSalePrice, ProductSku::getMarketPrice));
@@ -217,11 +271,13 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return skuPrice;
     }
 
+    @GuiguCache(prefix = "productDetails:")
     @Override
     public ProductDetails getProductDetails(Long id) {
         return productDetailsMapper.selectOne(new LambdaQueryWrapper<ProductDetails>().eq(ProductDetails::getProductId, id));
     }
 
+    @GuiguCache(prefix = "skuSpecValue:")
     @Override
     public Map<String, Long> getSkuSpecValue(Long id) {
         List<ProductSku> productSkuList = productSkuMapper.selectList(new LambdaQueryWrapper<ProductSku>().eq(ProductSku::getProductId, id).select(ProductSku::getId, ProductSku::getSkuSpec));
@@ -232,6 +288,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return skuSpecValueMap;
     }
 
+    @GuiguCache(prefix = "skuStockVo:")
     @Override
     public SkuStockVo getSkuStock(Long skuId) {
         SkuStock skuStock = skuStockMapper.selectOne(new LambdaQueryWrapper<SkuStock>().eq(SkuStock::getSkuId, skuId));
