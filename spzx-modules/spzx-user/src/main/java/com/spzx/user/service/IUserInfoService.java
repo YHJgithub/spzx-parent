@@ -2,8 +2,10 @@ package com.spzx.user.service;
 
 import java.util.List;
 
+import com.spzx.user.api.domain.UpdateUserLogin;
+import com.spzx.user.api.domain.UserInfo;
 import com.spzx.user.domain.UserAddress;
-import com.spzx.user.domain.UserInfo;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -16,7 +18,7 @@ public interface IUserInfoService extends IService<UserInfo>
 {
 
     /**
-     * 查询会员列表
+     * 查询会员列表   
      *
      * @param userInfo 会员
      * @return 会员集合
@@ -30,4 +32,9 @@ public interface IUserInfoService extends IService<UserInfo>
      */
     List<UserAddress> getUserAddress(Long id);
 
+    void register(UserInfo userInfo);
+
+    UserInfo selectUserByUserName(String username);
+
+    Boolean updateUserLogin(UpdateUserLogin updateUserLogin);   
 }

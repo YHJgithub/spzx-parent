@@ -17,6 +17,8 @@ import com.spzx.product.mapper.ProductSkuMapper;
 import com.spzx.product.mapper.SkuStockMapper;
 import com.spzx.product.service.IProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -49,6 +51,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Autowired
+    RedissonClient redissonClient;
 
     @Override
     public List<Product> selectProductList(Product product) {
@@ -185,6 +190,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         product.setId(id);
         if (status == 1) {
             product.setStatus(1); // 上架
+            // sku加入布隆过滤器
+            RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter("sku:bloom:filter");
+            List<ProductSku> productSkuList = productSkuMapper.selectList(new LambdaQueryWrapper<ProductSku>().eq(ProductSku::getProductId, id));
+            productSkuList.forEach(item -> {
+                bloomFilter.add(item.getId());
+            });
         } else {
             product.setStatus(-1); // 下架
         }
