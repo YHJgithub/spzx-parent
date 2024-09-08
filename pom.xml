@@ -237,6 +237,7 @@
         <module>spzx-modules</module>
         <module>spzx-api</module>
         <module>spzx-common</module>
+        <module>spzx-api/spzx-api-cart</module>
     </modules>
     <packaging>pom</packaging>
 

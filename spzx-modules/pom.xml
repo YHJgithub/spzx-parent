@@ -16,6 +16,8 @@
         <module>spzx-product</module>
         <module>spzx-user</module>
         <module>spzx-channel</module>
+        <module>spzx-cart</module>
+        <module>spzx-order</module>
     </modules>
 
     <artifactId>spzx-modules</artifactId>
