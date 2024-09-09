@@ -95,7 +95,6 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             orderItemList = cartInfoList.stream().map(cartInfo -> {
                 OrderItem orderItem = new OrderItem();
                 BeanUtils.copyProperties(cartInfo, orderItem);
-                orderItem.setSkuPrice(cartInfo.getSkuPrice());
                 return orderItem;
             }).collect(Collectors.toList());
 

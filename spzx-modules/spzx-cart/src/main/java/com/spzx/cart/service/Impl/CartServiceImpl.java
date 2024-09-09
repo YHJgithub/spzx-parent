@@ -66,7 +66,7 @@ public class CartServiceImpl implements ICartService {
             }
             // 说明购物车没有该商品，构建购物车对象，存入Redis
             CartInfo cartInfo = new CartInfo();
-            cartInfo.setSkuId(userId);
+            cartInfo.setUserId(userId);
             cartInfo.setSkuNum(skuNum > threshold ? threshold : skuNum);
             cartInfo.setUpdateTime(new Date());
             cartInfo.setCreateTime(new Date());
