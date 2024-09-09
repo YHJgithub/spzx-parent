@@ -3,6 +3,7 @@ package com.spzx.order.controller;
 import java.util.List;
 import java.util.Arrays;
 
+import com.spzx.common.security.annotation.RequiresLogin;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,6 +72,13 @@ public class OrderInfoController extends BaseController {
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(orderInfoService.selectOrderInfoById(id));
+    }
+
+    @Operation(summary = "订单结算")
+    @RequiresLogin
+    @GetMapping("/trade")
+    public AjaxResult orderTradeData() {
+        return success(orderInfoService.orderTradeData());
     }
 
 }

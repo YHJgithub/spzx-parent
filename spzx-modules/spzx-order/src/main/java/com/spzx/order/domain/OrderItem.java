@@ -46,6 +46,6 @@ public class OrderItem extends BaseEntity
     /** 商品购买的数量 */
     @Excel(name = "商品购买的数量")
     @Schema(description = "商品购买的数量")
-    private Long skuNum;
+    private Integer skuNum;
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.spzx.order.domain.OrderInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.spzx.order.domain.TradeVo;
 
 /**
  * 订单Service接口
@@ -28,4 +29,5 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      */
     public OrderInfo selectOrderInfoById(Long id);
 
+    TradeVo orderTradeData();
 }

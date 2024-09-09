@@ -308,4 +308,18 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return skuStockVo;
     }
     // ==================================获取商品详情END=====================================
+
+
+    @Override
+    public List<SkuPrice> getSkuPriceList(List<Long> skuIdList) {
+        List<ProductSku> productSkuList = productSkuMapper.selectList(new LambdaQueryWrapper<ProductSku>()
+                .in(ProductSku::getId, skuIdList)
+                .select(ProductSku::getId, ProductSku::getSalePrice));
+        return productSkuList.stream().map(item -> {
+            SkuPrice skuPrice = new SkuPrice();
+            skuPrice.setSkuId(item.getId());
+            skuPrice.setSalePrice(item.getSalePrice());
+            return skuPrice;
+        }).toList();
+    }
 }

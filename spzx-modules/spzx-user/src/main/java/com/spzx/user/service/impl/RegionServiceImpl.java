@@ -7,6 +7,7 @@ import com.spzx.user.mapper.RegionMapper;
 import com.spzx.user.service.IRegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -15,10 +16,22 @@ public class RegionServiceImpl extends ServiceImpl<RegionMapper, Region> impleme
 
     @Autowired
     private RegionMapper regionMapper;
-    
-    
+
+
     @Override
     public List<Region> treeSelect(String parentCode) {
         return regionMapper.selectList(new LambdaQueryWrapper<Region>().eq(Region::getParentCode, parentCode));
+    }
+
+    @Override
+    public String getNameByCode(String code) {
+        if (StringUtils.isEmpty(code)) {
+            return "";
+        }
+        Region region = regionMapper.selectOne(new LambdaQueryWrapper<Region>().eq(Region::getCode, code).select(Region::getName));
+        if (null != region) {
+            return region.getName();
+        }
+        return "";
     }
 }

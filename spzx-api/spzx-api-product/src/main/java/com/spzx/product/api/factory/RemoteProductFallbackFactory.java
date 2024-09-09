@@ -64,6 +64,10 @@ public class RemoteProductFallbackFactory implements FallbackFactory<RemoteProdu
                 return R.fail("获取商品sku库存失败:" + cause.getMessage());
             }
 
+            @Override
+            public R<List<SkuPrice>> getSkuPriceList(List<Long> skuIdList, String source) {
+                return R.fail("获取商品sku价格列表失败:" + cause.getMessage());
+            }
         };
     }
 }

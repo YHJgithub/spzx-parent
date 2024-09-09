@@ -65,6 +65,6 @@ public class UserAddress extends BaseEntity
     /** 是否默认地址（0：否 1：是） */
     @Excel(name = "是否默认地址", readConverterExp = "0=：否,1=：是")
     @Schema(description = "是否默认地址")
-    private Long isDefault;
+    private Integer isDefault;
 
 }

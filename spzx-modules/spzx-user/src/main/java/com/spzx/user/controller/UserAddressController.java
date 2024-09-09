@@ -2,6 +2,8 @@ package com.spzx.user.controller;
 
 import java.util.List;
 import java.util.Arrays;
+
+import com.spzx.common.security.annotation.RequiresLogin;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,73 +44,44 @@ public class UserAddressController extends BaseController
      * 查询用户地址列表
      */
     @Operation(summary = "查询用户地址列表")
-    @RequiresPermissions("user:userAddress:list")
+    @RequiresLogin
     @GetMapping("/list")
-    public TableDataInfo list(UserAddress userAddress)
+    public AjaxResult list()
     {
-        startPage();
-        List<UserAddress> list = userAddressService.selectUserAddressList(userAddress);
-        return getDataTable(list);
-    }
-
-    /**
-     * 导出用户地址列表
-     */
-    @Operation(summary = "导出用户地址列表")
-    @RequiresPermissions("user:userAddress:export")
-    @Log(title = "用户地址", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, UserAddress userAddress)
-    {
-        List<UserAddress> list = userAddressService.selectUserAddressList(userAddress);
-        ExcelUtil<UserAddress> util = new ExcelUtil<UserAddress>(UserAddress.class);
-        util.exportExcel(response, list, "用户地址数据");
-    }
-
-    /**
-     * 获取用户地址详细信息
-     */
-    @Operation(summary = "获取用户地址详细信息")
-    @RequiresPermissions("user:userAddress:query")
-    @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
-        return success(userAddressService.getById(id));
+        List<UserAddress> list = userAddressService.selectUserAddressList();
+        return success(list);
     }
 
     /**
      * 新增用户地址
      */
     @Operation(summary = "新增用户地址")
-    @RequiresPermissions("user:userAddress:add")
-    @Log(title = "用户地址", businessType = BusinessType.INSERT)
+    @RequiresLogin
     @PostMapping
     public AjaxResult add(@RequestBody UserAddress userAddress)
     {
-        return toAjax(userAddressService.save(userAddress));
+        return toAjax(userAddressService.insertUserAddress(userAddress));
     }
 
     /**
      * 修改用户地址
      */
     @Operation(summary = "修改用户地址")
-    @RequiresPermissions("user:userAddress:edit")
-    @Log(title = "用户地址", businessType = BusinessType.UPDATE)
+    @RequiresLogin
     @PutMapping
     public AjaxResult edit(@RequestBody UserAddress userAddress)
     {
-        return toAjax(userAddressService.updateById(userAddress));
+        return toAjax(userAddressService.updateUserAddress(userAddress));
     }
 
     /**
      * 删除用户地址
      */
     @Operation(summary = "删除用户地址")
-    @RequiresPermissions("user:userAddress:remove")
-    @Log(title = "用户地址", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
+    @RequiresLogin
+    @DeleteMapping("/{id}")
+    public AjaxResult remove(@PathVariable Long id)
     {
-        return toAjax(userAddressService.removeBatchByIds(Arrays.asList(ids)));
+        return toAjax(userAddressService.removeById(id));
     }
 }
