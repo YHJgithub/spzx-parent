@@ -60,7 +60,8 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         if (userAddress.getIsDefault().intValue() == 1) {
             UserAddress updateUserAddress = new UserAddress();
             updateUserAddress.setIsDefault(0);
-            userAddressMapper.update(updateUserAddress, new LambdaQueryWrapper<UserAddress>().eq(UserAddress::getUserId, userAddress.getUserId()));
+            userAddressMapper.update(updateUserAddress, new LambdaQueryWrapper<UserAddress>()
+                    .eq(UserAddress::getUserId, userAddress.getUserId()));
         }
         return userAddressMapper.insert(userAddress);
     }
