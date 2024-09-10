@@ -66,7 +66,7 @@ public class OrderInfo extends BaseEntity
     /** 订单状态【0-&gt;待付款；1-&gt;待发货；2-&gt;已发货；3-&gt;待用户收货，已完成；-1-&gt;已取消】 */
     @Excel(name = "订单状态【0-&gt;待付款；1-&gt;待发货；2-&gt;已发货；3-&gt;待用户收货，已完成；-1-&gt;已取消】")
     @Schema(description = "订单状态【0-&gt;待付款；1-&gt;待发货；2-&gt;已发货；3-&gt;待用户收货，已完成；-1-&gt;已取消】")
-    private Long orderStatus;
+    private Integer orderStatus;
 
     /** 收货人姓名 */
     @Excel(name = "收货人姓名")

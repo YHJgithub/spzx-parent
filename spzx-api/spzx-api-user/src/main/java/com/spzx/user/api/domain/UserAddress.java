@@ -1,4 +1,4 @@
-package com.spzx.user.domain;
+package com.spzx.user.api.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

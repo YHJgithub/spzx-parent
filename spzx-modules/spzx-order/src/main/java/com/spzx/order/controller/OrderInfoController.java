@@ -3,17 +3,13 @@ package com.spzx.order.controller;
 import java.util.List;
 import java.util.Arrays;
 
+import com.github.pagehelper.PageHelper;
 import com.spzx.common.security.annotation.RequiresLogin;
+import com.spzx.order.domain.OrderForm;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.spzx.common.log.annotation.Log;
 import com.spzx.common.log.enums.BusinessType;
 import com.spzx.common.security.annotation.RequiresPermissions;
@@ -79,6 +75,45 @@ public class OrderInfoController extends BaseController {
     @GetMapping("/trade")
     public AjaxResult orderTradeData() {
         return success(orderInfoService.orderTradeData());
+    }
+
+    @Operation(summary = "用户提交订单")
+    @RequiresLogin
+    @PostMapping("/submitOrder")
+    public AjaxResult submitOrder(@RequestBody OrderForm orderForm) {
+        return success(orderInfoService.submitOrder(orderForm));
+    }
+
+    @Operation(summary = "立即购买")
+    @RequiresLogin
+    @GetMapping("buy/{skuId}")
+    public AjaxResult buy(@PathVariable Long skuId) {
+        return success(orderInfoService.buy(skuId));
+    }
+
+    @Operation(summary = "获取订单信息")
+    @RequiresLogin
+    @GetMapping("getOrderInfo/{orderId}")
+    public AjaxResult getOrderInfo(@PathVariable Long orderId) {
+        // OrderInfo orderInfo = orderInfoService.getById(orderId);
+        OrderInfo orderInfo = orderInfoService.selectOrderInfoById(orderId);
+        return success(orderInfo);
+    }
+
+    @Operation(summary = "获取用户订单分页列表")
+    @GetMapping("/userOrderInfoList/{pageNum}/{pageSize}")
+    public TableDataInfo list(
+            @Parameter(name = "pageNum", description = "当前页码", required = true)
+            @PathVariable Integer pageNum,
+
+            @Parameter(name = "pageSize", description = "每页记录数", required = true)
+            @PathVariable Integer pageSize,
+
+            @Parameter(name = "orderStatus", description = "订单状态", required = false)
+            @RequestParam(required = false, defaultValue = "") Integer orderStatus) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderInfo> list = orderInfoService.selectUserOrderInfoList(orderStatus);
+        return getDataTable(list);
     }
 
 }

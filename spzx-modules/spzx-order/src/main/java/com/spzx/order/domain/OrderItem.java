@@ -26,7 +26,7 @@ public class OrderItem extends BaseEntity
     /** 商品sku编号 */
     @Excel(name = "商品sku编号")
     @Schema(description = "商品sku编号")
-    private Integer skuId;
+    private Long skuId;
 
     /** 商品sku名字 */
     @Excel(name = "商品sku名字")

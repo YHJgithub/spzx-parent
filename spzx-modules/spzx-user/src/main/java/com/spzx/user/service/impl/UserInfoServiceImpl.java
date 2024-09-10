@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.spzx.common.core.exception.ServiceException;
 import com.spzx.user.api.domain.UpdateUserLogin;
 import com.spzx.user.api.domain.UserInfo;
-import com.spzx.user.domain.UserAddress;
+import com.spzx.user.api.domain.UserAddress;
 import com.spzx.user.mapper.UserAddressMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

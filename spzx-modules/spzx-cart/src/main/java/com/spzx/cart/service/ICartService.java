@@ -19,4 +19,8 @@ public interface ICartService {
     void clearCart();
 
     List<CartInfo> getCartCheckedList(Long userId);
+
+    Boolean updateCartPrice(Long userId);
+
+    Boolean deleteCartCheckedList(Long userId);
 }

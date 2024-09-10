@@ -2,6 +2,7 @@ package com.spzx.order.service;
 
 import java.util.List;
 
+import com.spzx.order.domain.OrderForm;
 import com.spzx.order.domain.OrderInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.spzx.order.domain.TradeVo;
@@ -30,4 +31,10 @@ public interface IOrderInfoService extends IService<OrderInfo> {
     public OrderInfo selectOrderInfoById(Long id);
 
     TradeVo orderTradeData();
+
+    Long submitOrder(OrderForm orderForm);
+
+    TradeVo buy(Long skuId);
+
+    List<OrderInfo> selectUserOrderInfoList(Integer orderStatus);
 }

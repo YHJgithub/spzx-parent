@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.spzx.user.api.domain.UpdateUserLogin;
 import com.spzx.user.api.domain.UserInfo;
-import com.spzx.user.domain.UserAddress;
+import com.spzx.user.api.domain.UserAddress;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 

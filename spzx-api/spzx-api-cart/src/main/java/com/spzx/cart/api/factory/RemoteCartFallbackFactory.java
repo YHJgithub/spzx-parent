@@ -27,6 +27,16 @@ public class RemoteCartFallbackFactory implements FallbackFactory<RemoteCartServ
                 return R.fail("获取用户购物车选中数据失败:" + throwable.getMessage());
             }
 
+            @Override
+            public R<Boolean> updateCartPrice(Long userId, String source) {
+                return R.fail("更新用户购物车列表价格" + throwable.getMessage());
+            }
+
+            @Override
+            public R<Boolean> deleteCartCheckedList(Long userId, String source) {
+                return R.fail("删除用户购物车选中数据失败:" + throwable.getMessage());
+            }
+
         };
     }
 }

@@ -18,4 +18,10 @@ public interface RemoteCartService {
     @GetMapping("/getCartCheckedList/{userId}")
     public R<List<CartInfo>> getCartCheckedList(@PathVariable("userId") Long userId, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
 
+    @GetMapping("/updateCartPrice/{userId}")
+    public R<Boolean> updateCartPrice(@PathVariable("userId") Long userId, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
+
+    @GetMapping("/deleteCartCheckedList/{userId}")
+    public R<Boolean> deleteCartCheckedList(@PathVariable("userId") Long userId, @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
+
 }

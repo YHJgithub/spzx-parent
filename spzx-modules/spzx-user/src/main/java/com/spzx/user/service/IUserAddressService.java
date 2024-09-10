@@ -2,7 +2,7 @@ package com.spzx.user.service;
 
 import java.util.List;
 
-import com.spzx.user.domain.UserAddress;
+import com.spzx.user.api.domain.UserAddress;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
