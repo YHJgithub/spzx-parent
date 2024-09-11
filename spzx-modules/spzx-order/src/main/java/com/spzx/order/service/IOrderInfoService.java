@@ -37,4 +37,8 @@ public interface IOrderInfoService extends IService<OrderInfo> {
     TradeVo buy(Long skuId);
 
     List<OrderInfo> selectUserOrderInfoList(Integer orderStatus);
+
+    void processCloseOrder(Long orderId);
+
+    void cancelOrder(Long orderId);
 }

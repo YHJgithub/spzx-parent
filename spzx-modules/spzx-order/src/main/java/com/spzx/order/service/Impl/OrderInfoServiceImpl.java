@@ -15,6 +15,8 @@ import com.spzx.common.core.domain.R;
 import com.spzx.common.core.exception.ServiceException;
 import com.spzx.common.core.utils.DateUtils;
 import com.spzx.common.core.utils.StringUtils;
+import com.spzx.common.rabbit.constant.MqConst;
+import com.spzx.common.rabbit.service.RabbitService;
 import com.spzx.common.security.utils.SecurityUtils;
 import com.spzx.order.domain.*;
 import com.spzx.order.mapper.OrderItemMapper;
@@ -63,6 +65,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     @Autowired
     private OrderLogMapper orderLogMapper;
+
+    @Autowired
+    private RabbitService rabbitService;
 
     /**
      * 查询订单列表
@@ -206,6 +211,10 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         // 删除购物车选项
         remoteCartService.deleteCartCheckedList(userId, SecurityConstants.INNER);
+
+        // 发送延迟消息，取消订单
+        rabbitService.sendDelayMessage(MqConst.EXCHANGE_CANCEL_ORDER, MqConst.ROUTING_CANCEL_ORDER, String.valueOf(orderId), MqConst.CANCEL_ORDER_DELAY_TIME);
+
         return orderId;
     }
 
@@ -297,5 +306,41 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             });
         }
         return orderInfoList;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void processCloseOrder(Long orderId) {
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        if (null != orderInfo && orderInfo.getOrderStatus().intValue() == 0) {
+            orderInfo.setOrderStatus(-1);
+            orderInfo.setCancelTime(new Date());
+            orderInfo.setCancelReason("未支付自动取消");
+            orderInfoMapper.updateById(orderInfo);
+
+            // 记录日志
+            OrderLog orderLog = new OrderLog();
+            orderLog.setOrderId(orderInfo.getId());
+            orderLog.setProcessStatus(-1);
+            orderLog.setNote("系统取消订单");
+            orderLogMapper.insert(orderLog);
+        }
+    }
+
+    @Override
+    public void cancelOrder(Long orderId) {
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        if (null != orderInfo && orderInfo.getOrderStatus().intValue() == 0) {
+            orderInfo.setOrderStatus(-1);
+            orderInfo.setCancelTime(new Date());
+            orderInfo.setCancelReason("用户取消订单");
+            orderInfoMapper.updateById(orderInfo);
+            // 记录日志
+            OrderLog orderLog = new OrderLog();
+            orderLog.setOrderId(orderInfo.getId());
+            orderLog.setProcessStatus(-1);
+            orderLog.setNote("用户取消订单");
+            orderLogMapper.insert(orderLog);
+        }
     }
 }
